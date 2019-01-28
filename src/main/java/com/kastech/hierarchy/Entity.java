@@ -2,6 +2,7 @@ package com.kastech.hierarchy;
 
 
 import com.kastech.service.BeanFactory;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -77,19 +78,27 @@ public abstract class Entity {
     }
 
     public void runEntity() {
-        if (isRunSubEntitiesParellel()) {
-            runSubEntitiesParellel();
-        } else {
-            runSubEntitiesInSequence();
-        }
+//        if (isRunSubEntitiesParellel()) {
+//            runSubEntitiesParellel();
+//        } else {
+//            runSubEntitiesInSequence();
+//        }
+        runSubEntitiesInSequence();
         runComplete();
     }
 
     void runSubEntitiesParellel() {
         CountDownLatch countDownLatch = new CountDownLatch(this.getSubEntities().size());
         for (Entity entity : subEntities) {
+            TaskExecutor taskExecutor = this.getBeanFactory().getTaskExecutor();
             try {
-                entity.runEntity();
+                taskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        entity.runEntity();
+                    }
+                });
+
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error while running enitty: " + entity.getClass().getName());
             } finally {

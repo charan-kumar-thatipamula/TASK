@@ -16,7 +16,7 @@ class TestCaseStep extends Entity {
     @Override
     public void runEntity() {
         // TODO: Invoke logic corresponding to the TestCaseStep
-        logger.log(Level.INFO, "Running test case: " + id);
+        logger.log(Level.INFO, "******Running test case: " + id + "******");
     }
 
     @Override

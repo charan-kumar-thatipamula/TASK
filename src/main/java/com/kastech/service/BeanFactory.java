@@ -1,10 +1,8 @@
 package com.kastech.service;
 
-import com.kastech.repository.ActivityRepository;
-import com.kastech.repository.TestCaseRepository;
-import com.kastech.repository.TestCaseStepRepository;
-import com.kastech.repository.TestCycleRepository;
+import com.kastech.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +15,10 @@ public class BeanFactory {
     TestCaseRepository testCaseRepository;
     @Autowired
     TestCaseStepRepository testCaseStepRepository;
+    @Autowired
+    RunRepository runRepository;
+    @Autowired
+    TaskExecutor taskExecutor;
 
     public ActivityRepository getActivityRepository() {
         return activityRepository;
@@ -32,5 +34,13 @@ public class BeanFactory {
 
     public TestCaseStepRepository getTestCaseStepRepository() {
         return testCaseStepRepository;
+    }
+
+    public RunRepository getRunRepository() {
+        return runRepository;
+    }
+
+    public TaskExecutor getTaskExecutor() {
+        return taskExecutor;
     }
 }
