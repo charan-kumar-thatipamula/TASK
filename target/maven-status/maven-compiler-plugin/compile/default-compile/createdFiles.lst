@@ -5,6 +5,7 @@ com\kastech\supportlibraries\Report.class
 com\kastech\hierarchy\Activity.class
 com\kastech\hierarchy\EntityFactory$1.class
 com\kastech\supportlibraries\KeywordLibrary$1.class
+com\kastech\util\DataMapper.class
 com\kastech\repository\TestCaseRepository.class
 com\kastech\supportlibraries\TestNG_Configuration.class
 com\kastech\hierarchy\enums\EntityType.class

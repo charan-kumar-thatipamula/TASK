@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import com.kastech.model.TestCaseDetailsTable;
+import com.kastech.repository.TestCaseRepository;
+import com.kastech.util.DataMapper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -37,7 +36,8 @@ public class ExecuteScripts{
     Util utilObject;
     @Autowired
     KeywordLibrary keywordLibrary;
-
+	@Autowired
+	TestCaseRepository testCaseRepository;
 
 
     ChromeOptions options;
@@ -479,6 +479,8 @@ public class ExecuteScripts{
 
 							//Setting the path of Test Data/Business flow sheets to the variable 'dataPath'
 							//dataPath = homePath+"\\TestData\\"+testCase+".xlsx";
+
+							// Fetch test case steps from db here
 							dataPath = homePath+"\\TestData\\"+module+".xlsx";
 
 							//Creating a HTML file for the test case inside the corresponding module's current browser folder
@@ -496,8 +498,18 @@ public class ExecuteScripts{
 								//Reading the sheet "TestSteps" in the test data workbook of the module and collecting all the steps of this test case into an array list
 								List<String> whereClause2 = new ArrayList<String>();
 								whereClause2.add("TestScript::"+testCase);
-								Map<String, List<String>> result2 = poiObject.fetchWithCondition(dataPath, "TestSteps", whereClause2);
-
+								// Fetch test case steps as Map here.
+								Map<String, List<String>> result2 = null;
+								try {
+									List<TestCaseDetailsTable> testCaseSteps = testCaseRepository.findByTestCaseIdOrderByCreateAtAsc(testCase);
+									if (testCaseSteps!=null && !testCaseSteps.isEmpty()) {
+										result2 = DataMapper.getMapFromTableEntry(testCaseSteps);
+									}
+								} catch (Exception e) {
+								}
+								if (result2 == null) {
+									result2 = poiObject.fetchWithCondition(dataPath, "TestSteps", whereClause2);
+								}
 								//Loop for iterating through each step of the test case/test script
 								for(int k=0; k<result2.get("TestScript").size(); k++){
 									if(testCase.equalsIgnoreCase(result2.get("TestScript").get(k))){
