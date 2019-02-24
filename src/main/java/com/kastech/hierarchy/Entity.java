@@ -67,6 +67,9 @@ public abstract class Entity {
 
     public void createSubEntities() {
         List<String> subEntityIds = getSubEntityIds();
+        if (subEntityIds == null) {
+            return;
+        }
         for (String id : subEntityIds) {
             Entity subEntity = createSubEntity(id);
             if (subEntity != null) {

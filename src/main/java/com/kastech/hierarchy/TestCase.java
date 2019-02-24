@@ -29,7 +29,8 @@ class TestCase extends Entity {
     @Override
     List<String> getSubEntityIds() {
         TestCaseRepository testCaseRepository = this.getBeanFactory().getTestCaseRepository();
-        List<TestCaseDetailsTable> testCaseDetailsTables = testCaseRepository.findByTestCaseIdOrderByCreateAtAsc(getId());
+        String testCaseId = getId();
+        List<TestCaseDetailsTable> testCaseDetailsTables = testCaseRepository.findByTestCaseId(testCaseId);
         List<String> testCaseSteps = new LinkedList<>();
         for (TestCaseDetailsTable testCaseDetailsTable : testCaseDetailsTables) {
             testCaseSteps.add(getTestCase(testCaseDetailsTable));

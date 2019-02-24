@@ -40,6 +40,14 @@ public class TestCaseDetailsTable {
     @Column(name = "modified_at")
     String modifiedAt;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTestCaseId() {
         return testCaseId;
     }

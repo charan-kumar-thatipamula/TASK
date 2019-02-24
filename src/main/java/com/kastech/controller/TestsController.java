@@ -51,7 +51,7 @@ public class TestsController {
 //            String browsertype = (String) input.get("browser");
 //            Boolean rescind = (Boolean) input.get("rescind");
 //            standaloneDriver.execute(username,passWord,runId,tenant,browsertype,rescind);
-            entityService.runActivity(executeRequest);
+            entityService.runEntity(executeRequest);
         } catch (Exception e) {
             System.out.println(e.getMessage());
 //            return "Failed";
