@@ -1,5 +1,6 @@
 package com.kastech.hierarchy;
 
+import com.kastech.model.ActivityTable;
 import com.kastech.repository.ActivityRepository;
 
 import java.util.ArrayList;
@@ -27,9 +28,14 @@ public class Activity extends Entity {
 
     @Override
     List<String> getSubEntityIds() {
-        // TODO: extract TestCycle ids corresponding to this Activity
+        // TODO: extract TestCycle ids corresponding to this ActivityTable
         ActivityRepository activityRepository = this.getBeanFactory().getActivityRepository();
-//        return activityRepository.findById(Integer.parseInt(this.getId()));
-        return null;
+        List<ActivityTable> activityTableList = activityRepository.findByActivityId(getId());
+        List<String> testCycleIds = new ArrayList<>();
+        for (ActivityTable activityTable: activityTableList) {
+            testCycleIds.add(activityTable.getTestCycleId());
+        }
+        return testCycleIds;
     }
+
 }

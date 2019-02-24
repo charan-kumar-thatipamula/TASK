@@ -1,10 +1,13 @@
 package com.kastech.hierarchy;
 
+import com.kastech.model.TestCaseDetailsTable;
+import com.kastech.repository.TestCaseRepository;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class TestCase extends Entity {
+class TestCase extends Entity {
 
     TestCase(String id) {
         this.id = id;
@@ -25,7 +28,29 @@ public class TestCase extends Entity {
 
     @Override
     List<String> getSubEntityIds() {
-        // TODO: Extract TestCaseStep ids corresponding to this TestCase
-        return null;
+        TestCaseRepository testCaseRepository = this.getBeanFactory().getTestCaseRepository();
+        String testCaseId = getId();
+        List<TestCaseDetailsTable> testCaseDetailsTables = testCaseRepository.findByTestCaseId(testCaseId);
+        List<String> testCaseSteps = new LinkedList<>();
+        for (TestCaseDetailsTable testCaseDetailsTable : testCaseDetailsTables) {
+            testCaseSteps.add(getTestCase(testCaseDetailsTable));
+        }
+        return testCaseSteps;
+    }
+
+    private String getTestCase(TestCaseDetailsTable t) {
+        List<String> testCase = new LinkedList<>();
+        // TODO: modify below order based on requirement
+        addToTestCase(t.getKeyword(), testCase);
+        addToTestCase(t.getKeyInData(), testCase);
+        addToTestCase(t.getObjectId(), testCase);
+        addToTestCase(t.getScreenShot(), testCase);
+        return String.join(";", testCase);
+    }
+
+    private void addToTestCase(String s, List<String> testCase) {
+        if (s != null && s.length() !=0) {
+            testCase.add(s);
+        }
     }
 }

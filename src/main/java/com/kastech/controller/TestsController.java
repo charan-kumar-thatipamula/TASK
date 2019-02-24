@@ -1,6 +1,7 @@
 package com.kastech.controller;
 
 import com.kastech.DriverScript.StandaloneDriver;
+import com.kastech.request.ExecuteRequest;
 import com.kastech.service.EntityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
 import java.util.Map;
 
 @RestController
@@ -41,7 +42,7 @@ public class TestsController {
     }
 
     @RequestMapping(value="/runtestcases", method= RequestMethod.POST)
-    public ResponseEntity<String> executeTestCases(@RequestBody Map<String, Object> input) {
+    public ResponseEntity<String> executeTestCases(@RequestBody ExecuteRequest executeRequest) {
         try {
 //            String username = (String) input.get("userName");
 //            String passWord = (String) input.get("passWord");
@@ -50,7 +51,7 @@ public class TestsController {
 //            String browsertype = (String) input.get("browser");
 //            Boolean rescind = (Boolean) input.get("rescind");
 //            standaloneDriver.execute(username,passWord,runId,tenant,browsertype,rescind);
-            entityService.runActivity((String) input.get("runId"));
+            entityService.runEntity(executeRequest);
         } catch (Exception e) {
             System.out.println(e.getMessage());
 //            return "Failed";

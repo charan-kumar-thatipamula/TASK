@@ -1,8 +1,13 @@
 package com.kastech.repository;
 
-import com.kastech.hierarchy.TestCase;
+import com.kastech.model.TestCaseDetailsTable;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TestCaseRepository extends CrudRepository<TestCase, Integer> {
+import java.util.List;
+
+@Repository
+public interface TestCaseRepository extends CrudRepository<TestCaseDetailsTable, String> {
+    List<TestCaseDetailsTable> findByTestCaseId(String testCaseId);
 }
 
