@@ -119,4 +119,20 @@ public class TestCaseDetailsTable {
     public void setScreenShot(String screenShot) {
         this.screenShot = screenShot;
     }
+
+    @Override
+    public String toString() {
+        return "TestCaseDetailsTable{" +
+                "id=" + id +
+                ", testCaseId='" + testCaseId + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", objectId='" + objectId + '\'' +
+                ", keyInData='" + keyInData + '\'' +
+                ", screenShot='" + screenShot + '\'' +
+                ", passLogMsg='" + passLogMsg + '\'' +
+                ", failLogMsg='" + failLogMsg + '\'' +
+                ", createAt='" + createAt + '\'' +
+                ", modifiedAt='" + modifiedAt + '\'' +
+                '}';
+    }
 }

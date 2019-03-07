@@ -652,6 +652,117 @@ public class ExecuteScripts{
 			}
 	}
 
+public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
+						String module,
+						WebDriver driver,
+						String homePath,
+						String browserFolder) {
+//	if (testCaseSteps != null) {
+//		for (TestCaseDetailsTable testCaseDetailsTable : testCaseSteps) {
+//			System.out.println(testCaseDetailsTable.toString());
+//			System.out.println("module: " + module + "\n"
+//					+ "driver: " + driver + "\n"
+//					+ "homePath: " + homePath + "\n"
+//					+ "browserFolder: " + browserFolder);
+//		}
+//		return;
+//	}
+	String testCase = module;
+	Map<String, List<String>> result2 = null;
+	try {
+		if (testCaseSteps!=null && !testCaseSteps.isEmpty()) {
+			result2 = DataMapper.getMapFromTableEntry(testCaseSteps);
+	}
+	} catch (Exception e) {
+	}
+	//Loop for iterating through each step of the test case/test script
+	for(int k=0; k<result2.get("TestScript").size(); k++){
+		if(testCase.equalsIgnoreCase(result2.get("TestScript").get(k))){
+			//Storing the value of the column "Keyword" from the sheet "TestSteps"
+			keyword = result2.get("Keyword").get(k);
+
+			//Storing the value of the column "ObjectID" from the sheet "TestSteps"
+
+			try{
+				objectName = result2.get("ObjectID").get(k);
+				//objectID = utilObject.getObjectFromObjectMap(objectName, testCase);
+				objectID = utilObject.getObjectFromObjectMap(objectName, module);
+			}catch(Exception e){
+				// TODO Auto-generated catch block
+			}
+
+			//Storing the value of the column "KeyInData" from the sheet "TestSteps"
+			try {
+				//Directly storing the value present in the column "KeyInData" for current step (hard coded data)
+				dataValue = result2.get("KeyInData").get(k);
+				//When the value in column starts with text "getData=", then connecting with sheet "TestData" and reading the data in mentioned column and storing that data returned in the variable
+				//When the value in column starts with text "getDataINI=", then connecting with OutputData.INI file and reading the data in mentioned Section and Key and storing that data returned in the variable
+				if(dataValue.startsWith("getData=")){
+					dataValue = utilObject.getData(dataValue.split("getData=")[1],driver, module, testCase, homePath, currentIteration, browser, passScreenshot, browserFolder);
+					if(objectID.indexOf("~")>0) {
+						objectID = objectID.replaceAll("~.*?~", dataValue);
+					}
+				}else if(dataValue.startsWith("getDataINI=")){
+					String parameters = dataValue.split("getDataINI=")[1].trim();
+					dataValue = utilObject.getDataINI(parameters.split(";")[0].trim(),parameters.split(";")[1].trim());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+
+			}
+
+			//Storing the value of pass screenshot column
+			try{
+				passScreenshot = result2.get("PassScreenshot").get(k);
+				if(passScreenshot == null){
+					passScreenshot="";
+				}
+			}catch(Exception e){
+				// TODO Auto-generated catch block
+
+			}
+
+			//Storing the value of OnPassLogMsg column
+			try {
+				onPassLog = result2.get("OnPassLogMsg").get(k);
+				if(onPassLog==null){
+					onPassLog = "";
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				onPassLog = "";
+			}
+
+			//Storing the value of OnFailLogMsg column
+			try {
+				onFailLog = result2.get("OnFailLogMsg").get(k);
+				if(onFailLog==null){
+					onFailLog = "";
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				onFailLog = "";
+			}
+
+			//Checking if the error flag is False or it has been set to True by previous steps. Current step executed only if error flag is false
+//			if(error.get(module+"_"+testCase)==false){
+				//Checking if the keyword value does not end with "#". If a keyword has "#" at end, that keyword is skipped
+				if(!keyword.endsWith("#")){
+					//Checking if keyword starts with "function=". If it starts with "function=", then framework searches for matching method in ReusableFunctions.java and invokes that method
+					if(keyword.startsWith("function=")){
+						methodName = keyword.split("function=")[1].trim();
+						ExecuteMethod(homePath, testCase, module, browser, objectID, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, error.get(module+"_"+testCase), browserFolder);
+					}else{
+						//If keyword does not start with "function=", then framework searches for matching method in KeywordLibrary.java and invokes that method
+						ExecuteKeyword(homePath, testCase, module, browser, objectID, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, false, browserFolder);
+					}
+				}
+
+//			}
+
+		}
+	}
+}
 	/**
 	 * Author: Pradeep Bura
 	 * Method Name: ExecuteModularDriver

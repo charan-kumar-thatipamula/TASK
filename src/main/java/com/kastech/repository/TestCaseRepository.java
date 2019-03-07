@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface TestCaseRepository extends CrudRepository<TestCaseDetailsTable, String> {
     List<TestCaseDetailsTable> findByTestCaseIdOrderByCreateAtAsc(String testCaseId);
+    List<TestCaseDetailsTable> findByTestCaseIdOrderById(String testCaseId);
 }
 

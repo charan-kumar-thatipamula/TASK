@@ -2,7 +2,9 @@ package com.kastech.hierarchy;
 
 
 import com.kastech.service.BeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Component
+@Scope("prototype")
 public abstract class Entity {
 
     String id;
@@ -67,6 +71,9 @@ public abstract class Entity {
 
     public void createSubEntities() {
         List<String> subEntityIds = getSubEntityIds();
+        if (subEntityIds == null) {
+            return;
+        }
         for (String id : subEntityIds) {
             Entity subEntity = createSubEntity(id);
             if (subEntity != null) {
@@ -78,13 +85,19 @@ public abstract class Entity {
     }
 
     public void runEntity() {
+        logger.log(Level.INFO, "Running entity: " + id);
 //        if (isRunSubEntitiesParellel()) {
 //            runSubEntitiesParellel();
 //        } else {
 //            runSubEntitiesInSequence();
 //        }
+        hookBeforeRun();
         runSubEntitiesInSequence();
-        runComplete();
+        hookAfterRun();
+        logger.log(Level.INFO, "Completed running entity: " + id);
+    }
+
+    public void hookBeforeRun() {
     }
 
     void runSubEntitiesParellel() {
@@ -121,7 +134,7 @@ public abstract class Entity {
             }
         }
     }
-    void runComplete() {
+    void hookAfterRun() {
         logger.log(Level.INFO, "Completed all running all sub entries for: " + this.getClass().getName());
     }
     abstract Entity createSubEntity(String id);

@@ -104,7 +104,7 @@ public class StandaloneDriver {
 
 				if(numberOfExecutedTCs!=0){
 					driver = driverObject.SelectDriver(ListOfBrowsers[i],port);
-					driver.manage().window().maximize();
+                    driver.manage().window().maximize();
 					if(i==0)
 						resultsFolder = testngDriver.CreateExecutionFolder(homePath);
 

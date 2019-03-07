@@ -1,15 +1,30 @@
 package com.kastech.hierarchy;
 
+import com.kastech.config.ApplicationContextProvider;
 import com.kastech.model.ActivityTable;
 import com.kastech.repository.ActivityRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+@Component
+@Scope("prototype")
 public class Activity extends Entity {
 
-    public Activity(String id) {
+    @Autowired
+    ApplicationContextProvider applicationContextProvider;
+//    public Activity(String id) {
+//        this.id = id;
+//        this.subEntities = new ArrayList<>();
+//        this.runSubEntitiesParellel = true;
+//        logger = Logger.getLogger(Activity.class.getName());
+//    }
+
+    public void initialize(String id) {
         this.id = id;
         this.subEntities = new ArrayList<>();
         this.runSubEntitiesParellel = true;
@@ -17,13 +32,16 @@ public class Activity extends Entity {
     }
 
     @Override
-    void runComplete() {
+    void hookAfterRun() {
 
     }
 
     @Override
     Entity createSubEntity(String id) {
-        return new TestCycle(id);
+//        return new TestCycle(id);
+        TestCycle testCycle = applicationContextProvider.getContext().getBean(TestCycle.class);
+        testCycle.initialize(id);
+        return testCycle;
     }
 
     @Override

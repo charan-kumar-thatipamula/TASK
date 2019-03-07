@@ -8,6 +8,7 @@ com\kastech\supportlibraries\KeywordLibrary$1.class
 com\kastech\util\DataMapper.class
 com\kastech\repository\TestCaseRepository.class
 com\kastech\supportlibraries\TestNG_Configuration.class
+com\kastech\config\ApplicationContextProvider.class
 com\kastech\hierarchy\enums\EntityType.class
 com\kastech\DriverScript\StandaloneDriver.class
 com\kastech\model\User.class

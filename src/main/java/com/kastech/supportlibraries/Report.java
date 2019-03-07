@@ -279,7 +279,11 @@ public class Report {
 						"<td word-wrap: break-word; bgcolor=#F8F8FF width=300><b><font size =2 color=black face = verdana><center>"+stepName+"</td>"+
 						"<td bgcolor=#F8F8FF width=500><font size =2 color=black face = verdana><center>"+stepDesc+"</td>";
 
-				testCaseStepNo.put(scenario+"_"+testCase,(testCaseStepNo.get(scenario+"_"+testCase)+1));
+				if (testCaseStepNo.containsKey(scenario+"_"+testCase)) {
+					testCaseStepNo.put(scenario+"_"+testCase,(testCaseStepNo.get(scenario+"_"+testCase)+1));
+				} else {
+					testCaseStepNo.put(scenario+"_"+testCase, 1);
+				}
 
 				if(status.equals(Status.PASS)){
 
@@ -307,7 +311,11 @@ public class Report {
 					}
 
 				}else if(status.equals(Status.FAIL)){
-					ModuleTCFailCount.put(scenario+"_"+testCase, (ModuleTCFailCount.get(scenario+"_"+testCase))+1);
+					if (ModuleTCFailCount.containsKey(scenario+"_"+testCase)) {
+						ModuleTCFailCount.put(scenario+"_"+testCase, (ModuleTCFailCount.get(scenario+"_"+testCase))+1);
+					} else {
+						ModuleTCFailCount.put(scenario+"_"+testCase, 1);
+					}
 					screenshotsFolder = createScreenshotFolder(browserFolder);
 					createScreenshotFailFolder(screenshotsFolder);
 					utilObject.CaptureScreenshot(screenshotFailPath+"\\"+testCase+"_"+ModuleTCfailInc.get(scenario+"_"+testCase)+".png", driver);
@@ -326,7 +334,11 @@ public class Report {
 					createCustomScreenshotFolder(screenshotsFolder);
 					utilObject.CaptureScreenshot(customScreenshotPath+"\\"+testCase+"_Highlight_"+ModuleTChighlightInc.get(scenario+"_"+testCase)+".png", driver);
 					text = text+"<td bgcolor=#F8F8FF width=100><b><center><a href=../../"+scenario+"/"+browser +"/Screenshots/Custom/"+testCase+"_Highlight_"+ModuleTChighlightInc.get(scenario+"_"+testCase)+".png"+"><font size =2 color=brown face = verdana>DONE</a></td>";
-					ModuleTChighlightInc.put(scenario+"_"+testCase, (ModuleTChighlightInc.get(scenario+"_"+testCase)+1));
+					if (ModuleTChighlightInc.containsKey(scenario+"_"+testCase)) {
+						ModuleTChighlightInc.put(scenario+"_"+testCase, (ModuleTChighlightInc.get(scenario+"_"+testCase)+1));
+					} else {
+						ModuleTChighlightInc.put(scenario+"_"+testCase, 1);
+					}
 				}
 
 				Calendar cal = Calendar.getInstance();

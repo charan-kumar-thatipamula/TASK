@@ -1,12 +1,24 @@
 package com.kastech.hierarchy;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Component
+@Scope("prototype")
 class TestCaseStep extends Entity {
 
-    TestCaseStep(String id) {
+//    TestCaseStep(String id) {
+//        this.id = id;
+//        this.subEntities = null;
+//        this.runSubEntitiesParellel = false;
+//        logger = Logger.getLogger(TestCaseStep.class.getName());
+//    }
+
+    public void initialize(String id) {
         this.id = id;
         this.subEntities = null;
         this.runSubEntitiesParellel = false;
@@ -20,7 +32,7 @@ class TestCaseStep extends Entity {
     }
 
     @Override
-    void runComplete() {
+    void hookAfterRun() {
 
     }
 
