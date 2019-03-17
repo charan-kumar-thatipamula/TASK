@@ -243,7 +243,11 @@ public class KeywordLibrary{
 				reportObject.Log("Verification of Presence of Logout Link","The Log out link is not displayed", Status.FAIL, driver, testCase, scenario, browser, passScreenshot, browserFolder);
 			}*/
 		driver.findElement(By.xpath(".//button[@data-automation-id='Current_User']/div")).click();
-		waitForXPath(homePath,testCase,scenario,browser,"XPATH:.//button[text()='Sign Out']",objectName,dataValue,onPassLog,onFailLog,driver,passScreenshot,currentIteration,error,browserFolder);
+		try {
+			waitForXPath(homePath,testCase,scenario,browser,"XPATH:.//button[text()='Sign Out']",objectName,dataValue,onPassLog,onFailLog,driver,passScreenshot,currentIteration,error,browserFolder);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		driver.findElement(By.xpath(".//button[text()='Sign Out']")).click();
 		reportObject.Log("Logged Out of the session "+objectName, "Logged Out of the session "+dataValue, Status.DONE, driver, testCase, scenario, browser, passScreenshot, browserFolder);
 	}
@@ -256,7 +260,11 @@ public class KeywordLibrary{
 	 */
 	public void CloseBrowser(String homePath, String testCase, String scenario, String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder){
 		timeout = 5;
-		waitForXPath(homePath,testCase,scenario,browser,"XPATH:.//input[@aria-label='Username']",objectName,dataValue,onPassLog,onFailLog,driver,passScreenshot,currentIteration,error,browserFolder);
+		try {
+			waitForXPath(homePath,testCase,scenario,browser,"XPATH:.//input[@aria-label='Username']",objectName,dataValue,onPassLog,onFailLog,driver,passScreenshot,currentIteration,error,browserFolder);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		/*driver.manage().timeouts().implicitlyWait(timeout,TimeUnit.SECONDS);*/
 		reportObject.Log("Closing Browser "+objectName, "closed browser "+dataValue, Status.DONE, driver, testCase, scenario, browser, passScreenshot, browserFolder);
@@ -587,19 +595,22 @@ public class KeywordLibrary{
 	 * Return Type: Nothing
 	 * Description: This method waits for the object to appear in the application by waiting for a certain period of time
 	 */
-	public void waitForXPath(String homePath, String testCase, String scenario,String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder){
+	public void waitForXPath(String homePath, String testCase, String scenario,String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder) throws Exception{
 		try {
 			Thread.sleep(1000);
 			int count=1;
 			while(findElementsByType(driver, scenario, testCase, homePath, currentIteration.intValue(), objectId, browser, passScreenshot, browserFolder).size()==0){
 				count++;
 				Thread.sleep(2000);
-				if(count==5)
-					break;
+				if(count==5) {
+					throw new Exception("Unable to find xpath for testcase: " + testCase + "; currentIteration value: " + currentIteration.intValue() + "; objectId" + objectId);
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(e.getMessage());
+			throw e;
 		}
 	}
 

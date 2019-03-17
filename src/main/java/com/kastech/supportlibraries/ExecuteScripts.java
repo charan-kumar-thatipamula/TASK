@@ -1105,6 +1105,8 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 
             // Answer:
             e.getCause().printStackTrace();
+			methodName = "Logout";
+			ExecuteMethod(homePath, testCase, scenario, browser, objectId, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, error.get(scenario+"_"+testCase), browserFolder);
         }catch(Exception e){
 			e.printStackTrace();
 			//Setting the error flag to true indicating an exception has occurred
@@ -1119,6 +1121,7 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 			ExecuteMethod(homePath, testCase, scenario, browser, objectId, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, error.get(scenario+"_"+testCase), browserFolder);
 
 		}
+
 	}
 
 	/**
