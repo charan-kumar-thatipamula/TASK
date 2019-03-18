@@ -44,7 +44,7 @@ public class Run extends Entity  {
     List<String> getSubEntityIds() {
         RunRepository runRepository = this.getBeanFactory().getRunRepository();
 //        return activityRepository.findById(Integer.parseInt(this.getId()));
-        List<RunTable> runTableList = runRepository.findByRunId(getId());
+        List<RunTable> runTableList = runRepository.findByReportId(getId());
         List<String> activityIds = new ArrayList<>();
         for (RunTable runTable : runTableList) {
             activityIds.add(runTable.getActivityId());

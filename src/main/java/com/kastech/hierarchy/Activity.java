@@ -48,7 +48,8 @@ public class Activity extends Entity {
     List<String> getSubEntityIds() {
         // TODO: extract TestCycle ids corresponding to this ActivityTable
         ActivityRepository activityRepository = this.getBeanFactory().getActivityRepository();
-        List<ActivityTable> activityTableList = activityRepository.findByActivityId(getId());
+//        List<ActivityTable> activityTableList = activityRepository.findByActivityId(getId());
+        List<ActivityTable> activityTableList = activityRepository.findByActivityIdAndTestType(getId(), "automation");
         List<String> testCycleIds = new ArrayList<>();
         for (ActivityTable activityTable: activityTableList) {
             testCycleIds.add(activityTable.getTestCycleId());

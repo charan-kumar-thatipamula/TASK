@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RunRepository extends CrudRepository<RunTable, String> {
     List<RunTable> findByRunId(String runId);
+    List<RunTable> findByReportId(String reportId);
 }

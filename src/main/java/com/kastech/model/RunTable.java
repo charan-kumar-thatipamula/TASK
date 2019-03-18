@@ -33,6 +33,9 @@ public class RunTable {
     @Column(name = "run_dttm")
     String runDateTime;
 
+    @Column(name = "report_id")
+    String reportId;
+
     public String getRunId() {
         return runId;
     }
@@ -126,6 +129,14 @@ public class RunTable {
 
     public void setRunDateTime(String runDateTime) {
         this.runDateTime = runDateTime;
+    }
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
     }
 }
 

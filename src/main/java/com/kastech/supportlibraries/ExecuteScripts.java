@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.kastech.model.TestCaseDetailsTable;
 import com.kastech.repository.TestCaseRepository;
@@ -23,6 +24,7 @@ import org.openqa.selenium.safari.SafariDriver;
 
 import com.kastech.supportlibraries.Report.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,7 +40,8 @@ public class ExecuteScripts{
     KeywordLibrary keywordLibrary;
 	@Autowired
 	TestCaseRepository testCaseRepository;
-
+	@Autowired
+	TaskExecutor taskExecutor;
 
     ChromeOptions options;
 
@@ -747,17 +750,37 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 			//Checking if the error flag is False or it has been set to True by previous steps. Current step executed only if error flag is false
 //			if(error.get(module+"_"+testCase)==false){
 				//Checking if the keyword value does not end with "#". If a keyword has "#" at end, that keyword is skipped
-				if(!keyword.endsWith("#")){
-					//Checking if keyword starts with "function=". If it starts with "function=", then framework searches for matching method in ReusableFunctions.java and invokes that method
-					if(keyword.startsWith("function=")){
-						methodName = keyword.split("function=")[1].trim();
-						ExecuteMethod(homePath, testCase, module, browser, objectID, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, error.get(module+"_"+testCase), browserFolder);
-					}else{
-						//If keyword does not start with "function=", then framework searches for matching method in KeywordLibrary.java and invokes that method
-						ExecuteKeyword(homePath, testCase, module, browser, objectID, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, false, browserFolder);
+			long startTime = new Date().getTime();
+			AtomicBoolean waitForKeywordExecution = new AtomicBoolean(true);
+			taskExecutor.execute(()->{
+				try {
+					if(!keyword.endsWith("#")){
+						//Checking if keyword starts with "function=". If it starts with "function=", then framework searches for matching method in ReusableFunctions.java and invokes that method
+						if(keyword.startsWith("function=")){
+							methodName = keyword.split("function=")[1].trim();
+							ExecuteMethod(homePath, testCase, module, browser, objectID, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, error.get(module+"_"+testCase), browserFolder);
+						}else{
+							//If keyword does not start with "function=", then framework searches for matching method in KeywordLibrary.java and invokes that method
+							ExecuteKeyword(homePath, testCase, module, browser, objectID, objectName, dataValue, onPassLog, onFailLog, driver, passScreenshot, currentIteration, false, browserFolder);
+						}
 					}
-				}
+				} catch (Exception e) {
 
+				} finally {
+					waitForKeywordExecution.set(false);
+				}
+			});
+			if (waitForKeywordExecution.get()) {
+				if (new Date().getTime() - startTime < 10) {
+					try {
+						Thread.sleep(20000);
+					} catch (InterruptedException e) {
+
+					}
+				} else {
+					break;
+				}
+			}
 //			}
 
 		}

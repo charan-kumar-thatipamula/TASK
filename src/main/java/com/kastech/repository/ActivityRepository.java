@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ActivityRepository extends CrudRepository<ActivityTable, String> {
     List<ActivityTable> findByActivityId(String activityId);
+    List<ActivityTable> findByActivityIdAndTestType(String activityId, String testType);
 }
