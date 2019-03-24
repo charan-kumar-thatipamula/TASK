@@ -103,7 +103,7 @@ public class StandaloneDriver {
 			for(int i=0;i<ListOfBrowsers.length;i++){
 
 				if(numberOfExecutedTCs!=0){
-					driver = driverObject.SelectDriver(ListOfBrowsers[i],port);
+					driver = driverObject.SelectDriver(ListOfBrowsers[i],port, null);
                     driver.manage().window().maximize();
 					if(i==0)
 						resultsFolder = testngDriver.CreateExecutionFolder(homePath);

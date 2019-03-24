@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 @Component
 @Scope("prototype")
-class TestCycle extends Entity {
+public class TestCycle extends Entity {
 
     @Autowired
     ApplicationContextProvider applicationContextProvider;
@@ -43,6 +43,7 @@ class TestCycle extends Entity {
 //        return new TestCase(id);
         TestCase testCase = applicationContextProvider.getContext().getBean(TestCase.class);
         testCase.initialize(id);
+        testCase.setSuperEntity(this);
         return testCase;
     }
 

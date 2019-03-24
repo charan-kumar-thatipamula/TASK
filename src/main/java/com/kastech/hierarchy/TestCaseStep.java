@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 @Component
 @Scope("prototype")
-class TestCaseStep extends Entity {
+public class TestCaseStep extends Entity {
 
 //    TestCaseStep(String id) {
 //        this.id = id;

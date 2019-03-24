@@ -9,8 +9,10 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.kastech.hierarchy.Entity;
 import com.kastech.model.TestCaseDetailsTable;
 import com.kastech.repository.TestCaseRepository;
+import com.kastech.service.DBService;
 import com.kastech.util.DataMapper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Options;
@@ -42,6 +44,8 @@ public class ExecuteScripts{
 	TestCaseRepository testCaseRepository;
 	@Autowired
 	TaskExecutor taskExecutor;
+	@Autowired
+	DBService dbService;
 
     ChromeOptions options;
 
@@ -130,7 +134,7 @@ public class ExecuteScripts{
 					//Selecting and invoking the driver object of that particular browser using method SelectDriver
 					browser = ListOfBrowsers[z];
 
-					driver = SelectDriver(browser,Node);
+					driver = SelectDriver(browser,Node, null);
 					driver.manage().window().maximize();
 
 					//Setting the variable for calculating total duration of module for current browser to 0
@@ -752,7 +756,7 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 				//Checking if the keyword value does not end with "#". If a keyword has "#" at end, that keyword is skipped
 			long startTime = new Date().getTime();
 			AtomicBoolean waitForKeywordExecution = new AtomicBoolean(true);
-			taskExecutor.execute(()->{
+//			taskExecutor.execute(()->{
 				try {
 					if(!keyword.endsWith("#")){
 						//Checking if keyword starts with "function=". If it starts with "function=", then framework searches for matching method in ReusableFunctions.java and invokes that method
@@ -769,18 +773,18 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 				} finally {
 					waitForKeywordExecution.set(false);
 				}
-			});
-			if (waitForKeywordExecution.get()) {
-				if (new Date().getTime() - startTime < 10) {
-					try {
-						Thread.sleep(20000);
-					} catch (InterruptedException e) {
-
-					}
-				} else {
-					break;
-				}
-			}
+//			});
+//			if (waitForKeywordExecution.get()) {
+//				if (new Date().getTime() - startTime < 10) {
+//					try {
+//						Thread.sleep(20000);
+//					} catch (InterruptedException e) {
+//
+//					}
+//				} else {
+//					break;
+//				}
+//			}
 //			}
 
 		}
@@ -1234,7 +1238,7 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 	 * Description: This method is to select the Type of Driver to be used for executing the script depending on the Browser and Grid Setup
 	 * Return Type: WebDriver
 	 */
-	public WebDriver SelectDriver(String browser,String port){
+	public WebDriver SelectDriver(String browser,String port, Entity entity){
 
         WebDriver driver = null;
 
@@ -1257,7 +1261,11 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 					// driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"),caps);
 
 					driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), caps);
-				    driver.get(utilObject.getValueFromConfigProperties("URL"));
+					if (entity != null) {
+						driver.get(dbService.getUrlForEntity(entity));
+					} else {
+						driver.get(utilObject.getValueFromConfigProperties("URL"));
+					}
 				}else {
 					//When Grid Setup is No in Config.properties file
 					System.setProperty("webdriver.chrome.driver", new File (".").getCanonicalPath()+"\\Jars\\chromedriver.exe");
@@ -1265,7 +1273,11 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 					options.addArguments("test-type");
 					options.addArguments("disable-infobars");
 					driver = new ChromeDriver(options);
-					driver.get(utilObject.getValueFromConfigProperties("URL"));
+					if (entity != null) {
+						driver.get(dbService.getUrlForEntity(entity));
+					} else {
+						driver.get(utilObject.getValueFromConfigProperties("URL"));
+					}
 				}
 			}else if(browser.equalsIgnoreCase("IE")){
 				DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
@@ -1299,7 +1311,11 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 
 					driver = new InternetExplorerDriver(caps);
 				//	driver.manage().deleteAllCookies();
-					driver.get(utilObject.getValueFromConfigProperties("URL"));
+					if (entity != null) {
+						driver.get(dbService.getUrlForEntity(entity));
+					} else {
+						driver.get(utilObject.getValueFromConfigProperties("URL"));
+					}
 
 				//	driver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS);
 				}
@@ -1321,18 +1337,30 @@ public void runTestCase(List<TestCaseDetailsTable> testCaseSteps,
 				//	driver = new RemoteWebDriver(new URL("http://localhost:".concat(port).concat("/wd/hub")), caps);
 					driver.manage().deleteAllCookies();
 
-				    driver.get(utilObject.getValueFromConfigProperties("URL"));
+				    if (entity != null) {
+						driver.get(dbService.getUrlForEntity(entity));
+					} else {
+						driver.get(utilObject.getValueFromConfigProperties("URL"));
+					}
 				    driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 				}else {
 					//When Grid Setup is No in Config.properties file
 					driver = new FirefoxDriver();
-					driver.get(utilObject.getValueFromConfigProperties("URL"));
+					if (entity != null) {
+						driver.get(dbService.getUrlForEntity(entity));
+					} else {
+						driver.get(utilObject.getValueFromConfigProperties("URL"));
+					}
 					//driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 				}
 
 			}else if(utilObject.getValueFromConfigProperties("Browser").equalsIgnoreCase("Safari")){
 				driver = new SafariDriver();
-				driver.get(utilObject.getValueFromConfigProperties("URL"));
+				if (entity != null) {
+					driver.get(dbService.getUrlForEntity(entity));
+				} else {
+					driver.get(utilObject.getValueFromConfigProperties("URL"));
+				}
 			}
 
 		} catch (Exception e) {

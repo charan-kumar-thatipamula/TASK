@@ -21,6 +21,7 @@ public abstract class Entity {
     List<Entity> subEntities;
     boolean runSubEntitiesParellel;
     Logger logger;
+    Entity superEntity;
 
     public String getId() {
         return id;
@@ -60,6 +61,14 @@ public abstract class Entity {
 
     public void setRunSubEntitiesParellel(boolean runSubEntitiesParellel) {
         this.runSubEntitiesParellel = runSubEntitiesParellel;
+    }
+
+    public Entity getSuperEntity() {
+        return superEntity;
+    }
+
+    public void setSuperEntity(Entity superEntity) {
+        this.superEntity = superEntity;
     }
 
     void addSubEntity(Entity entity) {

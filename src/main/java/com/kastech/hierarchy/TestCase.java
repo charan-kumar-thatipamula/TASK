@@ -3,6 +3,7 @@ package com.kastech.hierarchy;
 import com.kastech.config.ApplicationContextProvider;
 import com.kastech.model.TestCaseDetailsTable;
 import com.kastech.repository.TestCaseRepository;
+import com.kastech.service.TestCaseStatusService;
 import com.kastech.supportlibraries.ExecuteScripts;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 @Component
 @Scope("prototype")
-class TestCase extends Entity {
+public class TestCase extends Entity {
     @Autowired
     ApplicationContextProvider applicationContextProvider;
 
@@ -26,6 +27,8 @@ class TestCase extends Entity {
 
     @Autowired
     TestCaseRepository testCaseRepository;
+    @Autowired
+    TestCaseStatusService testCaseStatusService;
 
     WebDriver driver = null;
     String resultsFolder = null;
@@ -34,6 +37,7 @@ class TestCase extends Entity {
     String module = null;
     String homePath = null;
     List<TestCaseDetailsTable> testCaseDetailsTableEntries = null;
+    String status;
 //    TestCase(String id) {
 //        this.id = id;
 //        this.subEntities = new LinkedList<>();
@@ -46,6 +50,7 @@ class TestCase extends Entity {
         this.subEntities = new LinkedList<>();
         this.runSubEntitiesParellel = false;
         logger = Logger.getLogger(TestCase.class.getName());
+        status = "Running";
     }
 
     @Override
@@ -53,7 +58,8 @@ class TestCase extends Entity {
         // TODO: read browser details rom Config.properties file or from db
         String port = "";
         browser = "Chrome";
-        driver = driverObject.SelectDriver(browser,port);
+        testCaseStatusService.updateStatus(this, status);
+        driver = driverObject.SelectDriver(browser,port, this);
         driver.manage().window().maximize();
         try {
             homePath = new File(".").getCanonicalPath();
@@ -66,19 +72,25 @@ class TestCase extends Entity {
     }
 
     void runSubEntitiesInSequence () {
-        driverObject.runTestCase(testCaseDetailsTableEntries, module, driver, homePath, browserFolder);
+        try {
+            driverObject.runTestCase(testCaseDetailsTableEntries, module, driver, homePath, browserFolder);
+            status = "Success";
+        } catch (Exception e) {
+            status = "Failed";
+            this.getLogger().log(Level.SEVERE, "Exception while running the test case", e.getMessage());
+        }
     }
 
     @Override
     void hookAfterRun() {
         driver.manage().deleteAllCookies();
-
+        testCaseStatusService.updateStatus(this, status);
         try {
             driver.close();
             driver.quit();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            driver.close();
+            driver.quit();
         }
     }
 
@@ -87,6 +99,7 @@ class TestCase extends Entity {
 //        return new TestCaseStep(id);
         TestCaseStep testCaseStep = applicationContextProvider.getContext().getBean(TestCaseStep.class);
         testCaseStep.initialize(id);
+        testCaseStep.setSuperEntity(this);
         return testCaseStep;
     }
 

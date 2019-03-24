@@ -37,6 +37,7 @@ public class Run extends Entity  {
     Entity createSubEntity(String id) {
         Activity activity = applicationContextProvider.getContext().getBean(Activity.class);
         activity.initialize(id);
+        activity.setSuperEntity(this);
         return activity;
     }
 

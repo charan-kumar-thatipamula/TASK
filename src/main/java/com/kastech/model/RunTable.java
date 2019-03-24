@@ -12,7 +12,7 @@ public class RunTable {
     @Id
     int id;
 
-    @Column(name="run_id", unique = true)
+    @Column(name="run_id")
     String runId;
 
     @Column(name="user_id")

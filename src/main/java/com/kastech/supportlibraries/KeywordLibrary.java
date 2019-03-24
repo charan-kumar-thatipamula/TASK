@@ -158,13 +158,13 @@ public class KeywordLibrary{
 	 */
 	public void enter_text(String homePath, String testCase, String scenario, String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder) throws InterruptedException{
 		System.out.println("\n\n****** homePath: " + homePath + "; testCase: " +  testCase + "; scenario: " + scenario + "; browser: " + browser + "; objectId: " + objectId + "; objectName: " + objectName + "; dataValue: " + dataValue + "; onPassLog: " + onPassLog + "; onFailLog: " + onFailLog + "; driver: " + driver + "; passScreenshot: " + passScreenshot + "; currentIteration: " + currentIteration + "; error: " + error + "; browserFolder: " + browserFolder + "*******\n\n");
-		System.out.println("---  START OF TESTCASE ----");
+		System.out.println("---  START OF TESTCASE: " + testCase + "----");
 		findElementByType(driver, scenario, testCase, homePath, currentIteration.intValue(), objectId, browser, passScreenshot, browserFolder).clear();
 		Thread.sleep(100);
 		findElementByType(driver, scenario, testCase, homePath, currentIteration.intValue(), objectId, browser, passScreenshot, browserFolder).sendKeys(dataValue);
 
 		reportObject.Log("Entering text in the text box "+objectName, "Entered the text "+dataValue, Status.DONE, driver, testCase, scenario, browser, passScreenshot, browserFolder);
-		System.out.println("---  END OF  ----");
+		System.out.println("---  END OF: " + testCase + "----");
 	}
 
 	/**
@@ -174,12 +174,12 @@ public class KeywordLibrary{
 	 * Description: This method will type(and clicks ENTER) the text specified in KeyInData column of Test case
 	 */
 	public void search_text(String homePath, String testCase, String scenario, String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder){
-		System.out.println("---  START OF TESTCASE ----");
+		System.out.println("---  START OF TESTCASE: " + testCase + "----");
 		Actions action1= new Actions(driver);
 
 		findElementByType(driver, scenario, testCase, homePath, currentIteration.intValue(), objectId, browser, passScreenshot, browserFolder).sendKeys(dataValue,Keys.ENTER);
 
-		System.out.println("---  END OF  ----");
+		System.out.println("---  END OF: " + testCase + "----");
 	}
 
 
@@ -280,12 +280,12 @@ public class KeywordLibrary{
 	 * Description: This method will type(and clicks ENTER) the text specified in KeyInData column of Test case
 	 */
 	public void mouse_hover(String homePath, String testCase, String scenario, String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder){
-		System.out.println("---  START OF TESTCASE ----");
+		System.out.println("---  START OF TESTCASE: " + testCase + "----");
 		Actions action1= new Actions(driver);
 
 		WebElement hoverElement = findElementByType(driver, scenario, testCase, homePath, currentIteration.intValue(), objectId, browser, passScreenshot, browserFolder);
 		action1.moveToElement(hoverElement).perform();
-		System.out.println("---  END OF  ----");
+		System.out.println("---  END OF: " + testCase + "----");
 	}
 
 	/**
@@ -311,7 +311,7 @@ public class KeywordLibrary{
 	 * @throws InterruptedException
 	 */
 	public void type_date(String homePath, String testCase, String scenario, String browser, String objectId, String objectName, String dataValue, String onPassLog, String onFailLog, WebDriver driver, String passScreenshot, Integer currentIteration, Boolean error, String browserFolder) throws InterruptedException{
-		System.out.println("---  START OF TESTCASE ----");
+		System.out.println("---  START OF TESTCASE: " + testCase + "----");
 		String month  = dataValue.split("/")[0];
 		System.out.println("--- Month ----" + month.charAt(1));
 		String day = dataValue.split("/")[1];
@@ -325,7 +325,7 @@ public class KeywordLibrary{
 		action1.sendKeys(monthfield, month).perform();
 		action1.sendKeys(dayfield, day).perform();
 		action1.sendKeys(yearfield, year).perform();
-		System.out.println("---  END OF  ----");
+		System.out.println("---  END OF: " + testCase + "----");
 	}
 
 	/**

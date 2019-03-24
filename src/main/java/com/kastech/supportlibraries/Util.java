@@ -188,6 +188,9 @@ public class Util{
 	 * Return Type: String
 	 */
 	public String getValueFromConfigProperties(String key){
+		if (key.equalsIgnoreCase("URL")) {
+			System.out.println();
+		}
         prop = new Properties();
 		String value = "";
 		try {

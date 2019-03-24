@@ -41,6 +41,7 @@ public class Activity extends Entity {
 //        return new TestCycle(id);
         TestCycle testCycle = applicationContextProvider.getContext().getBean(TestCycle.class);
         testCycle.initialize(id);
+        testCycle.setSuperEntity(this);
         return testCycle;
     }
 
